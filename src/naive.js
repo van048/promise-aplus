@@ -86,7 +86,7 @@ function pRP(promise, resultOrReason, resolve, reject) {
           // TODO
           if (resolvePromiseCalled) return
           resolvePromiseCalled = true
-          pRP(promise, y)
+          pRP(promise, y, resolve, reject)
         }
         const rejectPromise = (r) => {
           // TODO
