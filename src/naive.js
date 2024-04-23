@@ -1,5 +1,5 @@
 const isFunction = obj => typeof obj === 'function'
-const isObject = obj => typeof obj === 'object'
+const isObject = obj => obj != null && typeof obj === 'object'
 
 const PENDING = 'pending'
 const FULFILLED = 'fulfilled'
