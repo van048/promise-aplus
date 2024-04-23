@@ -10,12 +10,10 @@ function A(f) {
   this.callbacks = []
 
   const re = (result)=>{
-    this.state = FULFILLED
-    this.result = result
+    transition(this, FULFILLED, result)
   }
   const rj = (reason)=>{
-    this.state = REJECTED
-    this.result = reason
+    transition(this, REJECTED, reason)
   }
 
   f && f(re, rj, this)
