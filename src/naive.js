@@ -22,13 +22,19 @@ const transition = (promise, state, result) => {
   if (promise.state !== PENDING) return
   promise.state = state
   promise.result = result
+  setTimeout(()=>{
+    while(promise.callbacks.length) {
+      const callback = promise.callbacks.shift()
+      handleCallback(callback,state,result,callback.p)
+    }
+  }, 0)
 }
 
 A.prototype.then = function(onFulfilled, onRejected) {
   return new A((resolve, reject, p) => {
     // 先假设resolve可以让该promise迁移至fulfilled，参数是result，resolve里可以拿到该promise的引用
     // 先假设reject可以让该promise迁移至rejected，参数是reason
-    const callback = { onFulfilled, onRejected, resolve, reject }
+    const callback = { onFulfilled, onRejected, resolve, reject, p }
 
     if (this.state === PENDING) {
       this.callbacks.push(callback)
@@ -38,6 +44,7 @@ A.prototype.then = function(onFulfilled, onRejected) {
   })
 }
 
+// p是跟callback里resolve对应的promise
 function handleCallback(callback, state, result, p) {
   const { onFulfilled, onRejected, resolve, reject } = callback
   try {
