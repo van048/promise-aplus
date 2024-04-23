@@ -67,7 +67,12 @@ function pRP(promise, resultOrReason, resolve, reject) {
     return reject(reason)
   }
   if (resultOrReason instanceof A) {
-    if (resultOrReason.state == PENDING) return
+    // If x is pending, promise must remain pending until x is fulfilled or rejected.
+    if (resultOrReason.state == PENDING) return resultOrReason.then(()=>{
+      resolve(resultOrReason.result)
+    },()=>{
+      reject(resultOrReason.result)
+    })
     else if (resultOrReason.state == FULFILLED) return resolve(resultOrReason.result)
     else return reject(resultOrReason.result)
   }
