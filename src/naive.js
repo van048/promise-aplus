@@ -66,6 +66,11 @@ function pRP(promise, resultOrReason, resolve, reject) {
     const reason = new TypeError('Can not fulfill promise with itself')
     return reject(reason)
   }
+  if (resultOrReason instanceof A) {
+    if (resultOrReason.state == PENDING) return
+    else if (resultOrReason.state == FULFILLED) return resolve(resultOrReason.result)
+    else return reject(resultOrReason.result)
+  }
   if (isObject(resultOrReason) || isFunction(resultOrReason)) {
     try {
       const then = resultOrReason.then
@@ -97,11 +102,6 @@ function pRP(promise, resultOrReason, resolve, reject) {
     } catch (e) {
       return reject(e)
     }
-  }
-  if (resultOrReason instanceof A) {
-    if (resultOrReason.state == PENDING) return
-    else if (resultOrReason.state == FULFILLED) return resolve(resultOrReason.result)
-    else return reject(resultOrReason.result)
   }
   resolve(resultOrReason)
 }
