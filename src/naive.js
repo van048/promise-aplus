@@ -98,7 +98,7 @@ function pRP(promise, resultOrReason, resolve, reject) {
           // 要用return终止分支
           return then.call(resultOrReason, resolvePromise, rejectPromise)
         } catch (err) {
-          if (!(resolvePromiseCalled && rejectPromiseCalled)) {
+          if (!(resolvePromiseCalled || rejectPromiseCalled)) {
             // 要用return终止分支
             return reject(err)
           }
