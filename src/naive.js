@@ -98,6 +98,11 @@ function pRP(promise, resultOrReason, resolve, reject) {
       return reject(e)
     }
   }
+  if (resultOrReason instanceof A) {
+    if (resultOrReason.state == PENDING) return
+    else if (resultOrReason.state == FULFILLED) return resolve(resultOrReason.result)
+    else return reject(resultOrReason.result)
+  }
   resolve(resultOrReason)
 }
 
