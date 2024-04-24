@@ -105,7 +105,7 @@ function pRP(promise, resultOrReason, resolve, reject) {
           }
         }
       } else {
-        resolve(resultOrReason)
+        return resolve(resultOrReason)
       }
     } catch (e) {
       return reject(e)
