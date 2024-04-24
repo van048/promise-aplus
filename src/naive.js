@@ -80,27 +80,28 @@ function pRP(promise, resultOrReason, resolve, reject) {
     try {
       const then = resultOrReason.then
       if (isFunction(then)) {
-        let resolvePromiseCalled = false
-        let rejectPromiseCalled = false
+        let promiseCalled = false
         const resolvePromise = (y) => {
           // TODO
-          if (resolvePromiseCalled) return
-          resolvePromiseCalled = true
+          if (promiseCalled) return
+          promiseCalled = true
           pRP(promise, y, resolve, reject)
         }
         const rejectPromise = (r) => {
           // TODO
-          if (rejectPromiseCalled) return
-          rejectPromiseCalled = true
+          if (promiseCalled) return
+          promiseCalled = true
           reject(r)
         }
         try {
           // 要用return终止分支
           return then.call(resultOrReason, resolvePromise, rejectPromise)
         } catch (err) {
-          if (!(resolvePromiseCalled || rejectPromiseCalled)) {
+          if (!promiseCalled) {
             // 要用return终止分支
             return reject(err)
+          } else {
+            return
           }
         }
       } else {
