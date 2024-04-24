@@ -16,7 +16,22 @@ function A(f) {
     transition(this, REJECTED, reason)
   }
 
-  f && f(re, rj, this)
+  let promiseCalled = false;
+  const resolvePromise = (y) => {
+    // TODO
+    if (promiseCalled) return;
+    promiseCalled = true;
+    pRP(this, y, re, rj);
+  };
+  const rejectPromise = (r) => {
+    // TODO
+    if (promiseCalled) return;
+    promiseCalled = true;
+    rj(r);
+  };
+
+  // f实际上就是第一个自定义的then function
+  f && f(resolvePromise, rejectPromise, this)
 }
 const transition = (promise, state, result) => {
   if (promise.state !== PENDING) return
