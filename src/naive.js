@@ -1,14 +1,17 @@
 const isFunction = obj => typeof obj === 'function'
+// null不是规范里的object
 const isObject = obj => obj != null && typeof obj === 'object'
 
 const PENDING = 'pending'
 const FULFILLED = 'fulfilled'
 const REJECTED = 'rejected'
+
 function A(f) {
   this.state = PENDING
   this.result = null
   this.callbacks = []
 
+  // 状态迁移
   const re = (result)=>{
     transition(this, FULFILLED, result)
   }
@@ -16,21 +19,24 @@ function A(f) {
     transition(this, REJECTED, reason)
   }
 
+  // 只回调一次
   let promiseCalled = false;
+  // 当前promise异步执行成功后回调
   const resolvePromise = (y) => {
-    // TODO
     if (promiseCalled) return;
     promiseCalled = true;
+    // y很多种情况:Promise、thenable、非thenable
+    // 递归下去直到递归停止，将递归停止时的值作为当前promise异步执行的结果
     pRP(this, y, re, rj);
   };
+  // 当前promise异步执行失败后回调
   const rejectPromise = (r) => {
-    // TODO
     if (promiseCalled) return;
     promiseCalled = true;
     rj(r);
   };
 
-  // f实际上就是第一个自定义的then function
+  // f实际上可以看作是第一个自定义的then function
   f && f(resolvePromise, rejectPromise, this)
 }
 const transition = (promise, state, result) => {
@@ -75,7 +81,7 @@ function handleCallback(callback, state, result, p) {
   }
 }
 
-// eslint-disable-next-line
+// Promise Resolution Procedure
 function pRP(promise, resultOrReason, resolve, reject) {
   if (promise === resultOrReason) {
     const reason = new TypeError('Can not fulfill promise with itself')
