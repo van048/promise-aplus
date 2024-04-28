@@ -31,7 +31,7 @@ const transition = (promise, state, result) => {
   if (promise.state !== PENDING) return
   promise.state = state
   promise.result = result
-  setTimeout(()=>{
+  queueMicrotask(()=>{
     while(promise.callbacks.length) {
       const callback = promise.callbacks.shift()
       // then的回调函数处理
@@ -48,7 +48,7 @@ A.prototype.then = function(onFulfilled, onRejected) {
     if (this.state === PENDING) {
       this.callbacks.push(callback)
     } else {
-      setTimeout(() => handleCallback(callback, this.state, this.result), 0)
+      queueMicrotask(() => handleCallback(callback, this.state, this.result), 0)
     }
   })
 }
